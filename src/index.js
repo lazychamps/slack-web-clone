@@ -18,7 +18,7 @@ import firebase from "../src/firebase";
 import { createStore } from "redux";
 import { Provider } from "react-redux";
 import { composeWithDevTools } from "redux-devtools-extension";
-import rootReducer from "./reducers";
+import rootReducer from "./reducers/rootReducer";
 import { connect } from "react-redux";
 import Spinner from "./components/common/Spinner";
 

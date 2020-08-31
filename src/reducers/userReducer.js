@@ -1,12 +1,12 @@
 import * as actionTypes from "../actions/types";
-import { combineReducers } from "redux";
 
 const initialState = {
   currentUser: null,
   isLoading: true,
 };
 
-const userReducer = (state = initialState, action) => {
+export const userReducer = (state = initialState, action) => {
+  console.log(action);
   switch (action.type) {
     case actionTypes.SET_USER:
       return {
@@ -23,9 +23,3 @@ const userReducer = (state = initialState, action) => {
       return state;
   }
 };
-
-const rootReducer = combineReducers({
-  userReducer,
-});
-
-export default rootReducer;

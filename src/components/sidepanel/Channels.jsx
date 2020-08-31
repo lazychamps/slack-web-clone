@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Menu, Icon, Modal, Form, Input, Button } from "semantic-ui-react";
 import firebase from "../../firebase";
 import { connect } from "react-redux";
+import { setCurrentChannel } from "../../actions/index";
 
 class Channels extends Component {
   state = {
@@ -21,10 +22,15 @@ class Channels extends Component {
     const { channelRef } = this.state;
     channelRef.on("child_added", (snap) => {
       channels.push(snap.val());
-      this.setState({ channels });
+      this.setState({ channels }, () => this.changeChannel(channels[0]));
       console.log(channels);
     });
   };
+
+  componentWillUnmount() {
+    const { channelRef } = this.state;
+    channelRef.off("child_added");
+  }
 
   isFormValid = ({ channelName, channelDetails }) => {
     return channelName && channelDetails;
@@ -71,20 +77,29 @@ class Channels extends Component {
     this.setState({ [target.name]: target.value });
   };
 
+  changeChannel = (channel) => {
+    console.log({ channel });
+    this.props.setCurrentChannel(channel);
+  };
+
   displayChannels = (channels) =>
     channels.length > 0 &&
-    channels.map((channel) => (
-      <Menu.Item
-        key={channel.id}
-        name={channel.name}
-        style={{ opacity: 0.7 }}
-        onClick={() => {
-          console.log(channel);
-        }}
-      >
-        # {channel.name}
-      </Menu.Item>
-    ));
+    channels.map((channel) => {
+      const { currentChannel } = this.props;
+      return (
+        <Menu.Item
+          key={channel.id}
+          name={channel.name}
+          style={{ opacity: 0.7 }}
+          active={currentChannel && channel.id === currentChannel.id}
+          onClick={() => {
+            this.changeChannel(channel);
+          }}
+        >
+          # {channel.name}
+        </Menu.Item>
+      );
+    });
 
   render() {
     const { channels, modal } = this.state;
@@ -139,6 +154,7 @@ class Channels extends Component {
 
 const mapStateToProps = (state) => ({
   currentUser: state.userReducer.currentUser,
+  currentChannel: state.channelReducer.currentChannel,
 });
 
-export default connect(mapStateToProps)(Channels);
+export default connect(mapStateToProps, { setCurrentChannel })(Channels);
