@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Comment } from "semantic-ui-react";
+import { Comment, Image } from "semantic-ui-react";
 import moment from "moment";
 
 const isOwnMsg = (message, currentUser) => {
@@ -9,6 +9,8 @@ const isOwnMsg = (message, currentUser) => {
 
 const timeFromNow = (timestamp) => moment(timestamp).fromNow();
 
+const isImage = (message) => message.image;
+
 export const Message = ({ message, currentUser }) => {
   return (
     <Comment>
@@ -16,7 +18,11 @@ export const Message = ({ message, currentUser }) => {
       <Comment.Content className={isOwnMsg(message, currentUser)}>
         <Comment.Author as="a">{message.user.name}</Comment.Author>
         <Comment.Metadata>{timeFromNow(message.timestamp)}</Comment.Metadata>
-        <Comment.Text>{message.content}</Comment.Text>
+        {isImage(message) ? (
+          <Image src={message.image} className="message__image" />
+        ) : (
+          <Comment.Text>{message.content}</Comment.Text>
+        )}
       </Comment.Content>
     </Comment>
   );
