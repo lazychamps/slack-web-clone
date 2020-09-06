@@ -20,9 +20,7 @@ function App({ currentChannel, currentUser, isPrivateChannel }) {
           isPrivateChannel={isPrivateChannel}
         />
       </Grid.Column>
-      <Grid.Column width={4}>
-        <MetaPanel />
-      </Grid.Column>
+      <Grid.Column width={4}>{!isPrivateChannel && <MetaPanel />}</Grid.Column>
     </Grid>
   );
 }
