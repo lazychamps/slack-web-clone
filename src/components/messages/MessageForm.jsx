@@ -22,8 +22,15 @@ class MessageForm extends Component {
 
   closeModal = () => this.setState({ modal: false });
 
+  getPath = () => {
+    const { isPrivateChannel, currentChannel } = this.props;
+    return isPrivateChannel
+      ? `chat/private/${currentChannel.id}`
+      : `chat/public`;
+  };
+
   uploadFile = (file, metaData) => {
-    const { currentChannel, messagesRef } = this.props;
+    const { currentChannel, getMessagesRef } = this.props;
     const { storageRef } = this.state;
     const pathToUpload = currentChannel.id;
     const filePath = `chat/public/${uuidv4()}.jpg`;
@@ -53,7 +60,11 @@ class MessageForm extends Component {
             this.state.uploadTask.snapshot.ref
               .getDownloadURL()
               .then((downloadURL) => {
-                this.sendFileMessage(downloadURL, messagesRef, pathToUpload);
+                this.sendFileMessage(
+                  downloadURL,
+                  getMessagesRef(),
+                  pathToUpload
+                );
               })
               .catch((err) => {
                 console.log(err);
@@ -110,12 +121,12 @@ class MessageForm extends Component {
 
   sendMessage = async () => {
     const { message, errors } = this.state;
-    const { messagesRef, currentChannel } = this.props;
+    const { currentChannel, getMessagesRef } = this.props;
 
     if (message) {
       this.setState({ loading: true });
       try {
-        await messagesRef
+        await getMessagesRef()
           .child(currentChannel.id)
           .push()
           .set(this.createMessage());

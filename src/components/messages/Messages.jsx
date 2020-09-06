@@ -9,6 +9,7 @@ import Message from "./Message";
 class Messages extends Component {
   state = {
     messagesRef: firebase.database().ref("messages"),
+    privateMessageRef: firebase.database().ref("privateMessages"),
     messages: [],
     messagesLoading: true,
     numUniqueUsers: "",
@@ -30,13 +31,18 @@ class Messages extends Component {
 
   addMessageListener = (channelId) => {
     let loadedMessages = [];
-    const { messagesRef } = this.state;
-    messagesRef.child(channelId).on("child_added", (snap) => {
+    const ref = this.getMessagesRef();
+    ref.child(channelId).on("child_added", (snap) => {
       loadedMessages.push(snap.val());
       this.setState({ messages: loadedMessages, messagesLoading: false });
       this.countUniqueUsers(loadedMessages);
     });
   };
+
+  getMessagesRef = () =>
+    this.props.isPrivateChannel
+      ? this.state.privateMessageRef
+      : this.state.messagesRef;
 
   displayMessages = (messages) =>
     messages.map((message) => (
@@ -47,7 +53,10 @@ class Messages extends Component {
       />
     ));
 
-  currentChannelName = (channel) => (channel ? `${channel.name}` : "");
+  currentChannelName = (channel) => {
+    const { isPrivateChannel } = this.props;
+    return channel ? `${isPrivateChannel ? "@" : "#"}${channel.name}` : "";
+  };
 
   countUniqueUsers = (messages) => {
     const uniqueUsers = messages.reduce((acc, message) => {
@@ -90,7 +99,7 @@ class Messages extends Component {
   render() {
     // prettier-ignore
     const { messagesRef, messages, numUniqueUsers, searchTerm, searchResults, searchLoading } = this.state;
-    const { currentChannel } = this.props;
+    const { currentChannel, isPrivateChannel } = this.props;
     return (
       <React.Fragment>
         <MessageHeader
@@ -98,6 +107,7 @@ class Messages extends Component {
           numUniqueUsers={numUniqueUsers}
           handleSearchChange={this.handleSearchChange}
           searchLoading={searchLoading}
+          isPrivateChannel={isPrivateChannel}
         />
         <Segment>
           <Comment.Group className="messages">
@@ -106,7 +116,10 @@ class Messages extends Component {
               : this.displayMessages(messages)}
           </Comment.Group>
         </Segment>
-        <MessageForm messagesRef={messagesRef} />
+        <MessageForm
+          messagesRef={messagesRef}
+          getMessagesRef={this.getMessagesRef}
+        />
       </React.Fragment>
     );
   }
