@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Segment, Header, Accordion, Icon } from "semantic-ui-react";
+import { Segment, Header, Accordion, Icon, Image } from "semantic-ui-react";
 
 class MetaPanel extends Component {
   state = { activeIndex: 0 };
@@ -13,10 +13,11 @@ class MetaPanel extends Component {
 
   render() {
     const { activeIndex } = this.state;
+    const { currentChannel } = this.props;
     return (
       <Segment>
         <Header as="h3" attached="top">
-          About # Channel
+          About # {currentChannel.name}
         </Header>
         <Accordion styled attached="true">
           <Accordion.Title
@@ -29,7 +30,7 @@ class MetaPanel extends Component {
             Channel Details
           </Accordion.Title>
           <Accordion.Content active={activeIndex === 0}>
-            details
+            {currentChannel.details}
           </Accordion.Content>
           <Accordion.Title
             active={activeIndex === 1}
@@ -53,7 +54,10 @@ class MetaPanel extends Component {
             Created By
           </Accordion.Title>
           <Accordion.Content active={activeIndex === 2}>
-            creater
+            <Header as="h3">
+              <Image circular src={currentChannel.createdBy.avatar} />
+              {currentChannel.createdBy.name}
+            </Header>
           </Accordion.Content>
         </Accordion>
       </Segment>
