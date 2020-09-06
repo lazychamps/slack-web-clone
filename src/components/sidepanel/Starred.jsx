@@ -1,10 +1,48 @@
 import React, { Component } from "react";
 import { Menu, Icon } from "semantic-ui-react";
 import { connect } from "react-redux";
+import firebase from "../../firebase";
 import { setCurrentChannel, setPrivateChannel } from "../../actions/index";
 
 class Starred extends Component {
-  state = { starredChannel: [], activeChannel: "" };
+  state = {
+    starredChannels: [],
+    activeChannel: "",
+    usersRef: firebase.database().ref("users"),
+  };
+
+  componentDidMount() {
+    const { currentUser } = this.props;
+    if (currentUser) {
+      this.addListeners(currentUser.uid);
+    }
+  }
+
+  addListeners = (userId) => {
+    const { usersRef } = this.state;
+    usersRef
+      .child(userId)
+      .child("starred")
+      .on("child_added", (snap) => {
+        const starredChannel = { id: snap.key, ...snap.val() };
+        this.setState({
+          starredChannels: [...this.state.starredChannels, starredChannel],
+        });
+      });
+
+    usersRef
+      .child(userId)
+      .child("starred")
+      .on("child_removed", (snap) => {
+        const channelToRemove = { id: snap.key, ...snap.val() };
+        const filteredChannels = this.state.starredChannels.filter(
+          (starredChannel) => starredChannel.id !== channelToRemove.id
+        );
+        this.setState({
+          starredChannels: filteredChannels,
+        });
+      });
+  };
 
   changeChannel = (channel) => {
     console.log({ channel });
@@ -33,19 +71,27 @@ class Starred extends Component {
     });
 
   render() {
-    const { starredChannel } = this.state;
+    const { starredChannels } = this.state;
     return (
       <Menu.Menu className="menu">
         <Menu.Item>
           <span>
             <Icon name="star" /> STARRED
           </span>{" "}
-          ({starredChannel.length})
+          ({starredChannels.length})
         </Menu.Item>
-        {this.displayChannels(starredChannel)}
+        {this.displayChannels(starredChannels)}
       </Menu.Menu>
     );
   }
 }
 
-export default connect(null, { setCurrentChannel, setPrivateChannel })(Starred);
+const mapStateToProps = (state) => ({
+  currentUser: state.userReducer.currentUser,
+  currentChannel: state.channelReducer.currentChannel,
+});
+
+export default connect(mapStateToProps, {
+  setCurrentChannel,
+  setPrivateChannel,
+})(Starred);
