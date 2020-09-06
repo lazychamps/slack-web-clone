@@ -10,20 +10,36 @@ class Messages extends Component {
   state = {
     messagesRef: firebase.database().ref("messages"),
     privateMessageRef: firebase.database().ref("privateMessages"),
+    usersRef: firebase.database().ref("users"),
     messages: [],
     messagesLoading: true,
     numUniqueUsers: "",
     searchTerm: "",
     searchLoading: false,
     searchResults: [],
+    isChannelStarred: false,
   };
 
   componentDidMount() {
     const { currentUser, currentChannel } = this.props;
     if (currentUser && currentChannel) {
       this.addListeners(currentChannel.id);
+      this.addUserStarsListener(currentChannel.id, currentUser.uid);
     }
   }
+
+  addUserStarsListener = async (channelId, userId) => {
+    const { usersRef } = this.state;
+    const starredData = await usersRef
+      .child(userId)
+      .child("starred")
+      .once("value");
+    if (starredData.val() !== null) {
+      const channelIds = Object.keys(starredData.val());
+      const prevStarred = channelIds.includes(channelId);
+      this.setState({ isChannelStarred: prevStarred });
+    }
+  };
 
   addListeners = (channelId) => {
     this.addMessageListener(channelId);
@@ -77,6 +93,32 @@ class Messages extends Component {
     );
   };
 
+  handleStar = () => {
+    this.setState(
+      (prevState) => {
+        return { isChannelStarred: !prevState.isChannelStarred };
+      },
+      () => this.starChannel()
+    );
+  };
+
+  starChannel = () => {
+    const { isChannelStarred, usersRef } = this.state;
+    const { currentUser, currentChannel } = this.props;
+    const copyOfCurrentChannel = { ...currentChannel };
+    delete copyOfCurrentChannel.id;
+    if (isChannelStarred) {
+      usersRef.child(`${currentUser.uid}/starred`).update({
+        [currentChannel.id]: copyOfCurrentChannel,
+      });
+    } else {
+      usersRef
+        .child(`${currentUser.uid}/starred`)
+        .child(currentChannel.id)
+        .remove();
+    }
+  };
+
   handleSearchMessages = () => {
     const channelMessages = [...this.state.messages];
     const regex = new RegExp(this.state.searchTerm, "gi");
@@ -98,7 +140,7 @@ class Messages extends Component {
 
   render() {
     // prettier-ignore
-    const { messagesRef, messages, numUniqueUsers, searchTerm, searchResults, searchLoading } = this.state;
+    const { messagesRef, messages, numUniqueUsers, searchTerm, searchResults, searchLoading, isChannelStarred } = this.state;
     const { currentChannel, isPrivateChannel } = this.props;
     return (
       <React.Fragment>
@@ -108,6 +150,8 @@ class Messages extends Component {
           handleSearchChange={this.handleSearchChange}
           searchLoading={searchLoading}
           isPrivateChannel={isPrivateChannel}
+          handleStar={this.handleStar}
+          isChannelStarred={isChannelStarred}
         />
         <Segment>
           <Comment.Group className="messages">
