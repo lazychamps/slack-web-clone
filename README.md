@@ -21,3 +21,5 @@
 :heavy_check_mark: Add Typing Component Animation, Display in Messages
 
 :heavy_check_mark: Add Typing Listeners to See When Other Users Typing
+
+:heavy_check_mark: Automatic Scroll to Bottom upon New Message
