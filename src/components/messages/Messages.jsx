@@ -7,6 +7,7 @@ import firebase from "../../firebase";
 import Message from "./Message";
 import { setUserPosts } from "../../actions/index";
 import { connect } from "react-redux";
+import Typing from "./Typing";
 
 class Messages extends Component {
   state = {
@@ -176,6 +177,10 @@ class Messages extends Component {
             {searchTerm
               ? this.displayMessages(searchResults)
               : this.displayMessages(messages)}
+            <div style={{ display: "flex" }}>
+              <span className="user__typing">vaishali is typing</span>
+              <Typing />
+            </div>
           </Comment.Group>
         </Segment>
         <MessageForm

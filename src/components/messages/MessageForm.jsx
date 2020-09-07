@@ -144,7 +144,7 @@ class MessageForm extends Component {
 
   handleKeyDown = () => {
     const { message, typingRef } = this.state;
-    const { currentChannel, currentUser } = this.state;
+    const { currentChannel, currentUser } = this.props;
 
     if (message) {
       typingRef

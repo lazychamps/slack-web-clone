@@ -17,3 +17,5 @@
 :heavy_check_mark: Upload Cropped Image to Firebase, Put on User Profile
 
 :heavy_check_mark: Add Typing Collection to Track When Other Users Typing
+
+:heavy_check_mark: Add Typing Component Animation, Display in Messages

@@ -165,7 +165,8 @@ class Channels extends Component {
     const { typingRef } = this.state;
     console.log({ channel });
     this.props.setUserPosts(null);
-    typingRef.child(currentChannel.id).child(currentUser.uid).remove();
+    currentChannel &&
+      typingRef.child(currentChannel.id).child(currentUser.uid).remove();
     this.props.setCurrentChannel(channel);
     this.props.setPrivateChannel(false);
     this.setState({ channel }, () => this.clearNotifications());
