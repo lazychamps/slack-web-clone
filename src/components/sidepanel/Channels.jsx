@@ -10,7 +10,11 @@ import {
 } from "semantic-ui-react";
 import firebase from "../../firebase";
 import { connect } from "react-redux";
-import { setCurrentChannel, setPrivateChannel } from "../../actions/index";
+import {
+  setCurrentChannel,
+  setPrivateChannel,
+  setUserPosts,
+} from "../../actions/index";
 
 class Channels extends Component {
   state = {
@@ -157,7 +161,7 @@ class Channels extends Component {
 
   changeChannel = (channel) => {
     console.log({ channel });
-
+    this.props.setUserPosts(null);
     this.props.setCurrentChannel(channel);
     this.props.setPrivateChannel(false);
     this.setState({ channel }, () => this.clearNotifications());
@@ -244,4 +248,5 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps, {
   setCurrentChannel,
   setPrivateChannel,
+  setUserPosts,
 })(Channels);
