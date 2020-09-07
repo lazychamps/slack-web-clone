@@ -8,6 +8,7 @@ import Message from "./Message";
 import { setUserPosts } from "../../actions/index";
 import { connect } from "react-redux";
 import Typing from "./Typing";
+import Skeleton from "./Skeleton";
 
 class Messages extends Component {
   state = {
@@ -214,9 +215,18 @@ class Messages extends Component {
       </div>
     ));
 
+  displayMessageSkeleton = (messagesLoading) =>
+    messagesLoading ? (
+      <React.Fragment>
+        {[...Array(10)].map((_, i) => (
+          <Skeleton key={i} />
+        ))}
+      </React.Fragment>
+    ) : null;
+
   render() {
     // prettier-ignore
-    const { messagesRef, messages, numUniqueUsers, searchTerm, searchResults, searchLoading, isChannelStarred, typingUsers } = this.state;
+    const { messagesRef, messages, numUniqueUsers, searchTerm, searchResults, searchLoading, isChannelStarred, typingUsers, messagesLoading } = this.state;
     const { currentChannel, isPrivateChannel } = this.props;
     return (
       <React.Fragment>
@@ -231,6 +241,7 @@ class Messages extends Component {
         />
         <Segment>
           <Comment.Group className="messages">
+            {this.displayMessageSkeleton(messagesLoading)}
             {searchTerm
               ? this.displayMessages(searchResults)
               : this.displayMessages(messages)}

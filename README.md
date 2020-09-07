@@ -23,3 +23,5 @@
 :heavy_check_mark: Add Typing Listeners to See When Other Users Typing
 
 :heavy_check_mark: Automatic Scroll to Bottom upon New Message
+
+:heavy_check_mark: Show Message Skeleton when Messages Loading
