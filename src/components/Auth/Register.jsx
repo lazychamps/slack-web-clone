@@ -67,8 +67,8 @@ class Register extends Component {
 
   saveUser = ({ user }) => {
     const { usersRef } = this.state;
-    const { uid, displayName: name, photoURL: awatar } = user;
-    return usersRef.child(uid).set({ name, awatar });
+    const { uid, displayName: name, photoURL: avatar } = user;
+    return usersRef.child(uid).set({ name, avatar });
   };
 
   handleSubmit = async (event) => {

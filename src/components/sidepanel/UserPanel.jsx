@@ -6,7 +6,19 @@ import AvatarEditor from "react-avatar-editor";
 import { connect } from "react-redux";
 
 class UserPanel extends Component {
-  state = { modal: false, previewImage: "", croppedImage: "", blob: "" };
+  state = {
+    modal: false,
+    previewImage: "",
+    croppedImage: "",
+    blob: "",
+    storageRef: firebase.storage().ref(),
+    userRef: firebase.auth().currentUser,
+    usersRef: firebase.database().ref("users"),
+    uploadedCroppedImage: "",
+    metadata: {
+      contentType: "image/jpeg",
+    },
+  };
 
   handleSignOut = async () => {
     await firebase.auth().signOut();
@@ -27,6 +39,42 @@ class UserPanel extends Component {
         this.setState({ croppedImage: imageUrl, blob });
       });
     }
+  };
+
+  uploadCroppedImage = () => {
+    const { storageRef, userRef, blob, metadata } = this.state;
+    storageRef
+      .child(`storage/user-${userRef.uid}`)
+      .put(blob, metadata)
+      .then((snap) =>
+        snap.ref.getDownloadURL().then((downloadUrl) => {
+          this.setState({ uploadedCroppedImage: downloadUrl }, () =>
+            this.changeAvatar()
+          );
+        })
+      );
+  };
+
+  changeAvatar = () => {
+    const { currentUser } = this.props;
+    this.state.userRef
+      .updateProfile({
+        photoURL: this.state.uploadedCroppedImage,
+      })
+      .then(() => {
+        console.log("Image uploaded");
+        this.closeModal();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    this.state.usersRef
+      .child(currentUser.uid)
+      .update({ avatar: this.state.uploadedCroppedImage })
+      .then(() => {
+        console.log("User Avatar updated");
+      })
+      .catch((error) => console.log(error));
   };
 
   handleChange = (event) => {
@@ -123,7 +171,11 @@ class UserPanel extends Component {
             </Modal.Content>
             <Modal.Actions>
               {croppedImage && (
-                <Button color="green" inverted>
+                <Button
+                  color="green"
+                  inverted
+                  onClick={this.uploadCroppedImage}
+                >
                   <Icon name="save" />
                   Change Avatar
                 </Button>

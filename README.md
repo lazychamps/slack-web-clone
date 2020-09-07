@@ -11,3 +11,5 @@
 :heavy_check_mark: Create Change Avatar Modal
 
 :heavy_check_mark: Crop Uploaded Image with AvatarEditor
+
+:heavy_check_mark: Upload Cropped Image to Firebase, Put on User Profile
