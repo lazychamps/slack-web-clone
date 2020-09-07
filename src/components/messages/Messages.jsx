@@ -106,6 +106,12 @@ class Messages extends Component {
       this.countUniqueUsers(loadedMessages);
       this.countUserPosts(loadedMessages);
     });
+
+    setTimeout(() => {
+      if (this.state.messagesLoading) {
+        this.setState({ messagesLoading: false });
+      }
+    }, 5000);
   };
 
   getMessagesRef = () =>
