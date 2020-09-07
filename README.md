@@ -15,3 +15,5 @@
 :heavy_check_mark: Crop Uploaded Image with AvatarEditor
 
 :heavy_check_mark: Upload Cropped Image to Firebase, Put on User Profile
+
+:heavy_check_mark: Add Typing Collection to Track When Other Users Typing
