@@ -25,3 +25,5 @@
 :heavy_check_mark: Automatic Scroll to Bottom upon New Message
 
 :heavy_check_mark: Show Message Skeleton when Messages Loading
+
+:heavy_check_mark: Create Key Combo Shortcuts to Send Messages
