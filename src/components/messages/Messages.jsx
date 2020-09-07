@@ -5,6 +5,8 @@ import MessageHeader from "./MessageHeader";
 import MessageForm from "./MessageForm";
 import firebase from "../../firebase";
 import Message from "./Message";
+import { setUserPosts } from "../../actions/index";
+import { connect } from "react-redux";
 
 class Messages extends Component {
   state = {
@@ -52,6 +54,7 @@ class Messages extends Component {
       loadedMessages.push(snap.val());
       this.setState({ messages: loadedMessages, messagesLoading: false });
       this.countUniqueUsers(loadedMessages);
+      this.countUserPosts(loadedMessages);
     });
   };
 
@@ -85,6 +88,21 @@ class Messages extends Component {
       uniqueUsers.length > 1 ? "s" : ""
     }`;
     this.setState({ numUniqueUsers });
+  };
+
+  countUserPosts = (messages) => {
+    let userPosts = messages.reduce((acc, message) => {
+      if (message.user.name in acc) {
+        acc[message.user.name].count += 1;
+      } else {
+        acc[message.user.name] = {
+          avatar: message.user.avatar,
+          count: 1,
+        };
+      }
+      return acc;
+    }, {});
+    this.props.setUserPosts(userPosts);
   };
 
   handleSearchChange = ({ target }) => {
@@ -169,4 +187,4 @@ class Messages extends Component {
   }
 }
 
-export default Messages;
+export default connect(null, { setUserPosts })(Messages);
