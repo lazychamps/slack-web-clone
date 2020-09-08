@@ -27,3 +27,5 @@
 :heavy_check_mark: Show Message Skeleton when Messages Loading
 
 :heavy_check_mark: Create Key Combo Shortcuts to Send Messages
+
+:heavy_check_mark: Remove Listeners upon Component Unmount

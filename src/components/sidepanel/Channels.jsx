@@ -111,9 +111,16 @@ class Channels extends Component {
   };
 
   componentWillUnmount() {
-    const { channelRef } = this.state;
-    channelRef.off("child_added");
+    this.removeListeners();
   }
+
+  removeListeners = () => {
+    const { channelRef, channels } = this.state;
+    channelRef.off();
+    channels.forEach((channel) => {
+      this.state.messagesRef.child(channel.id).off();
+    });
+  };
 
   isFormValid = ({ channelName, channelDetails }) => {
     return channelName && channelDetails;

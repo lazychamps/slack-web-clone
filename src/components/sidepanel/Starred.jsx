@@ -18,6 +18,14 @@ class Starred extends Component {
     }
   }
 
+  componentWillUnmount() {
+    this.removeListeners();
+  }
+
+  removeListeners = () => {
+    this.state.usersRef.child(`${this.props.currentUser.uid}/starred`).off();
+  };
+
   addListeners = (userId) => {
     const { usersRef } = this.state;
     usersRef
