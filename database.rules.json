@@ -30,7 +30,7 @@
             ".validate": "newData.val().length>0"
           },
           "user": {
-            ".validate": "newData.val().length>0"
+            ".validate": "newData.hasChildren(['id', 'name', 'avatar'])"
           }
         }
       }
@@ -49,7 +49,7 @@
               ".validate": "newData.val().length>0"
             },
             "user": {
-              ".validate": "newData.val().length>0"
+              ".validate": "newData.hasChildren(['id', 'name', 'avatar'])"
             }
           }
         }
