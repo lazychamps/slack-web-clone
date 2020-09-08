@@ -22,7 +22,13 @@ import rootReducer from "./reducers/rootReducer";
 import { connect } from "react-redux";
 import Spinner from "./components/common/Spinner";
 
-const store = createStore(rootReducer, composeWithDevTools());
+let store;
+
+if (process.env.NODE_ENV === "development") {
+  store = createStore(rootReducer, composeWithDevTools());
+} else {
+  store = createStore(rootReducer);
+}
 
 const Root = ({ setUser, history, isLoading, clearUser }) => {
   useEffect(() => {

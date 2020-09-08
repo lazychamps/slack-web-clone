@@ -29,7 +29,8 @@ class Messages extends Component {
   };
 
   componentDidMount() {
-    const { currentUser, currentChannel, listeners } = this.props;
+    const { currentUser, currentChannel } = this.props;
+    const { listeners } = this.state;
     if (currentUser && currentChannel) {
       this.removeListeners(listeners);
       this.addListeners(currentChannel.id);

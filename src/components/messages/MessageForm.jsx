@@ -86,7 +86,6 @@ class MessageForm extends Component {
         );
       }
     );
-    console.log({ file, metaData });
   };
 
   sendFileMessage = async (downloadURL, messagesRef, pathToUpload) => {

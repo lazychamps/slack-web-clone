@@ -44,7 +44,7 @@ class UserPanel extends Component {
   uploadCroppedImage = () => {
     const { storageRef, userRef, blob, metadata } = this.state;
     storageRef
-      .child(`storage/user-${userRef.uid}`)
+      .child(`avatar/user/${userRef.uid}`)
       .put(blob, metadata)
       .then((snap) =>
         snap.ref.getDownloadURL().then((downloadUrl) => {
@@ -62,7 +62,6 @@ class UserPanel extends Component {
         photoURL: this.state.uploadedCroppedImage,
       })
       .then(() => {
-        console.log("Image uploaded");
         this.closeModal();
       })
       .catch((error) => {
@@ -71,9 +70,7 @@ class UserPanel extends Component {
     this.state.usersRef
       .child(currentUser.uid)
       .update({ avatar: this.state.uploadedCroppedImage })
-      .then(() => {
-        console.log("User Avatar updated");
-      })
+      .then(() => {})
       .catch((error) => console.log(error));
   };
 
